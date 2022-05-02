@@ -7,7 +7,7 @@
 using std::cout;
  
 int main(int argc, char* argv[]) {
-	unsigned int len = 10000;
+	size_t len = 10000;
 	if (argc == 1) {
 		cout << "Specify source file!\n";
 		return 0;
@@ -24,7 +24,6 @@ int main(int argc, char* argv[]) {
 	std::fstream fp;
 	try {
 		fp.open(argv[1]);
-		//.open("C:/.dev/bfcompiler/examples/mandelbrot.bf");
 	}
 	catch (const std::fstream::failure er) {
 		std::cerr << "Failed to open file: " << argv[1] << '\n';

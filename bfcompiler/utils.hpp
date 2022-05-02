@@ -22,7 +22,7 @@ struct Instruction {
 	}
 };
 
-int get_tenative_data(InstructionType type, const char &i) {
+int get_tenative_data(InstructionType type, const char i) {
 	switch (type) {
 	case InstructionType::INC:
 		return 44 - i;
@@ -36,7 +36,7 @@ int get_tenative_data(InstructionType type, const char &i) {
 	}
 }
 
-InstructionType classify(const char &t) {
+InstructionType classify(const char t) {
 	switch (t) {
 		case '<':
 		case '>':
@@ -97,7 +97,7 @@ std::vector<Instruction> make_instructions(std::fstream &fp) {
 	return ret;
 }
 
-void brainfuck(const std::vector<Instruction> is, unsigned int len) {
+void brainfuck(const std::vector<Instruction> &is, unsigned int len) {
 	size_t mptr = 0;
 	size_t pc = 0;
 	size_t _s = is.size();
