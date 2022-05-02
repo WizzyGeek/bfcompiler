@@ -24,11 +24,16 @@ int main(int argc, char* argv[]) {
 	std::fstream fp;
 	try {
 		fp.open(argv[1]);
+		//.open("C:/.dev/bfcompiler/examples/mandelbrot.bf");
 	}
 	catch (const std::fstream::failure er) {
 		std::cerr << "Failed to open file: " << argv[1] << '\n';
 		std::cerr << "Error message: " << er.what() << '\n';
 		std::cerr << "Error code: " << er.code() << '\n';
+		return 1;
+	}
+	if (!fp.is_open()) {
+		std::cerr << "Failed to open specified file" << "\n";
 		return 1;
 	}
 

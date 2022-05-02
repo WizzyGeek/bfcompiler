@@ -7,7 +7,7 @@
 // this is going to be included in only main.cpp so definations are fine
 
 enum struct InstructionType : char {
-	INC, MOV, JMZ, JNZ, IN, OUT, COMMENT, HLT
+	INC, MOV, JMZ, JNZ, IN, OUT, COMMENT
 };
 
 struct Instruction {
@@ -45,9 +45,9 @@ InstructionType classify(const char &t) {
 		case '-':
 			return InstructionType::INC;
 		case '[':
-			return InstructionType::JNZ;
-		case ']': 
 			return InstructionType::JMZ;
+		case ']': 
+			return InstructionType::JNZ;
 		case '.':
 			return InstructionType::OUT;
 		case ',':
@@ -57,13 +57,12 @@ InstructionType classify(const char &t) {
 	}
 }
 
-std::vector<Instruction> make_instructions(std::fstream &fp) throw(std::invalid_argument) {
+std::vector<Instruction> make_instructions(std::fstream &fp) {
 	char i;
-	std::stack<unsigned int> loops;
+	std::stack<size_t> loops;
 	std::vector<Instruction> ret;
 
-	while (!fp.eof()) {
-		fp.get(i);
+	while (fp.get(i)) {
 		InstructionType t = classify(i);
 		if (t == InstructionType::COMMENT) { continue; }
 
@@ -80,7 +79,7 @@ std::vector<Instruction> make_instructions(std::fstream &fp) throw(std::invalid_
 			}
 		}
 		else { // InstructionType::JNZ
-			if(!loops.empty()) {
+			if (!loops.empty()) {
 				ret[loops.top()].data = ret.size();
 				ret.push_back(Instruction(t, loops.top()));
 				loops.pop();
@@ -99,39 +98,47 @@ std::vector<Instruction> make_instructions(std::fstream &fp) throw(std::invalid_
 }
 
 void brainfuck(const std::vector<Instruction> is, unsigned int len) {
-	unsigned int mptr = 0;
-	unsigned int pc = 0;
-	unsigned int _s = is.size();
+	size_t mptr = 0;
+	size_t pc = 0;
+	size_t _s = is.size();
 	std::vector<uint8_t> mem(len);
 
-	Instruction i = is[pc];
-	switch (i.type) {
-		case InstructionType::INC:
-			mem[mptr] += i.data;
-		case InstructionType::MOV:
-			mptr += i.data;
-		case InstructionType::JMZ:
-			if (mem[mptr] == 0) {
-				pc = i.data + 1;
+	while (pc < _s) {
+		Instruction i = is[pc];
+		switch (i.type) {
+			case InstructionType::INC:
+				mem[mptr] += i.data;
+				break;
+			case InstructionType::MOV:
+				mptr = (i.data + mptr) % len;
+				break;
+			case InstructionType::JMZ:
+				if (mem[mptr] == 0) {
+					pc = i.data;
+				}
+				break;
+			case InstructionType::JNZ:
+				if (mem[mptr] != 0) {
+					pc = i.data;
+				}
+				break;
+			case InstructionType::IN: {
+				char inp = '\0'; // emulate ...
+				for (int j = 0; j < i.data; j++) {
+					std::cin >> inp;
+				}
+				mem[mptr] = inp;
+				break;
 			}
-		case InstructionType::JNZ:
-			if (mem[mptr] != 0) {
-				pc = i.data + 1;
-			}
-		case InstructionType::IN:
-			char inp; // emulate ...
-			for (int j = 0; j < i.data; j++) {
-				std::cin >> inp;
-			}
-			mem[mptr] = inp;
-		case InstructionType::OUT:
-			for (int j = 0; j < i.data; j++) {
-				std::cout << reinterpret_cast<unsigned char>(mem[mptr]);
-			}
-		if (++pc == _s) {
-			break;
+			case InstructionType::OUT:
+				for (int j = 0; j < i.data; j++) {
+					std::cout << mem[mptr];
+				}
+				break;
+			default:
+				break;
 		}
-		i = is[pc];
+		pc++;
 	}
 	return;
 }
