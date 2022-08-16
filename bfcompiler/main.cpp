@@ -1,13 +1,13 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-
 #include"utils.hpp"
 
 using std::cout;
+using namespace bf;
  
 int main(int argc, char* argv[]) {
-	size_t len = 10000;
+	unsigned int len = 10000;
 	if (argc == 1) {
 		cout << "Specify source file!\n";
 		return 0;
