@@ -22,7 +22,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="opts.hpp" />
     <ClInclude Include="utils.hpp" />
+    <ClCompile Include="opts.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

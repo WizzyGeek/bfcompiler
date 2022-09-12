@@ -38,6 +38,7 @@ int main(int argc, char* argv[]) {
 
 	try {
 		std::vector<Instruction> ins = make_instructions(fp);
+		// insert Optimisations here..
 		brainfuck(ins, len);
 		cout << "\n=== Program End ===";
 		return 0;

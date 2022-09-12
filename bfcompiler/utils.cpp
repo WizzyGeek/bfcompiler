@@ -6,6 +6,16 @@
 #include"utils.hpp"
 
 namespace bf {
+	Instruction::Instruction(InstructionType t, size_t d) {
+		type = t;
+		if (d > INT_MAX) {
+			std::cerr << "Data loss in int\n";
+			exit(1);
+		}
+		data = d;
+		offset = 0;
+	};
+
 	bool Instruction::is_dead() {
 		return (type == InstructionType::COMMENT || data == 0);
 	}
@@ -98,7 +108,13 @@ namespace bf {
 					mem[mptr] += i.data;
 					break;
 				case InstructionType::MOV:
-					mptr = (i.data + mptr) % len;
+					mptr = (i.data + mptr);
+#ifdef DEBUG
+					if (mptr < 0) {
+						std::cerr << "Negative Tape access! at instruction index  " << pc << '\n';
+						exit(1);
+					}
+#endif // DEBUG
 					break;
 				case InstructionType::JMZ:
 					if (mem[mptr] == 0) {
