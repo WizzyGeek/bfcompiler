@@ -4,7 +4,7 @@
 namespace bf {
 	namespace opts {
 		Insts offset_opt(const Insts& insts) {
-			Insts ret = Insts(insts.size());
+			Insts ret;
 			size_t writer = 0;
 			int last = -1;
 
@@ -16,7 +16,7 @@ namespace bf {
 				case InstructionType::JMZ:
 				case InstructionType::JNZ:
 					if (last != -1) {
-						auto temp2 = insts[last];
+						auto& temp2 = insts[last];
 						ret.push_back(Instruction(temp2.type, temp2.data, lastmovs));
 						ret.insert(ret.end(), insts.begin() + last + 1, insts.begin() + k + 1);
 						last = -1;
@@ -29,7 +29,7 @@ namespace bf {
 						lastmovs = i.data;
 					}
 					else {
-						auto linst = insts[last];
+						auto& linst = insts[last];
 						auto lmovs = last;
 
 						last = k; // Update last mov we leave after opt
